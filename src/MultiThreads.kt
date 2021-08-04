@@ -1,14 +1,17 @@
 import java.util.*
+import java.util.concurrent.*
 
 fun main() {
-    val syncList = Collections.synchronizedList(MutableList(1000, {i -> i}))
+    val syncList = ConcurrentLinkedQueue<Int>() //LinkedBlockingQueue - better to block avoiding OutOfMemory
+    for (i in 1..1000)
+        syncList.add(i)
     val t1 = Thread {
         for (s in syncList)
             println(s)
     }
     val t2 = Thread {
         for (i in 1..1000)
-            syncList.add(i)
+            syncList.add(i + 1000)
     }
     t1.start()
     t2.start()
